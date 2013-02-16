@@ -10,7 +10,7 @@ New features in this fork
 
 - GROWL notifications as well as OSX notifications (requires OSX 10.8 and 'terminal-notifier': 
  https://github.com/alloy/terminal-notifier)
-- Notifications can now be desabled
+- Notifications can now be disabled
 - GROWL no longer needs to be installed for script to work
 - Automatic archiving of processed email
 - Automatic flagging of processed email
