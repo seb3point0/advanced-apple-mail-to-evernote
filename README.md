@@ -3,7 +3,10 @@ Advanced Apple Mail to Evernote
 
 Advanced Apple Mail to Evernote is an AppleScript which exports Apple Mail messages to Evernote as part of a GTD workflow. 
 
-Original code for this script was written by Veritrope.com and can be found here: http://veritrope.com/code/apple-mail-to-evernote/. By forking this awesome piece of AppleScript, my goal was to improve it by adding some features relevant to my personal GTD workflow.
+Acknowledgements
+----------------
+Original code for this script was written by Justin Lancy at Veritrope.com and can be found here: http://veritrope.com/code/apple-mail-to-evernote/. Veritrope is the best source for Evernote AppleScripts and is where I got farmiliar with optimizing GTD workflow with scripting. By forking this awesome piece of code, my goal was to improve it by adding some features relevant to my personal GTD workflow.
+
 
 New features in this fork
 -------------------------
