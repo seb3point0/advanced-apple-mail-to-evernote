@@ -218,6 +218,9 @@ end item_Count
 
 -- Tagging and notebook selection dialog
 on tagging_Dialog()
+	
+	set isNotebookSelectionNeeded to false
+	
 	try
 		display dialog "" & Â
 			"Please Enter Your Tags Below:
@@ -230,6 +233,19 @@ on tagging_Dialog()
 		set errNum to -128
 	end try
 	
+	-- Select Notebook
+	if ButtonSel is "Select Notebook from List" then set isNotebookSelectionNeeded to true
+	
+	my tagging_Selection(userInput, isNotebookSelectionNeeded)
+	
+end tagging_Dialog
+
+
+-- Tagging and notebook selection w/o dialog
+on tagging_Selection(theTags, isNotebookSelectionNeeded)
+	
+	if theTags is {} then set theTags to defaultTags
+	
 	-- Assemble tag list
 	set theTags to my Tag_List(theTags, defaultDelims)
 	
@@ -238,8 +254,10 @@ on tagging_Dialog()
 	set EVTag to my Tag_Check(theTags)
 	
 	-- Select Notebook
-	if ButtonSel is "Select Notebook from List" then set EVnotebook to my Notebook_List()
-end tagging_Dialog
+	if isNotebookSelectionNeeded then set EVnotebook to my Notebook_List()
+	
+end tagging_Selection
+
 
 -- Get Evernote's default Notebook
 on default_Notebook()
@@ -360,7 +378,11 @@ on mail_Process(theMessages)
 	my default_Notebook()
 	tell application "Mail"
 		try
-			if tagging_Switch is "ON" then my tagging_Dialog()
+			if tagging_Switch is "ON" then
+				my tagging_Dialog()
+			else
+				my tagging_Selection(defaultTags, false)
+			end if
 			
 			repeat with thisMessage in theMessages
 				try
