@@ -67,6 +67,9 @@ property EVnotebook : ""
 -- TYPE IT BETWEEN THE QUOTES ("Email Message" IS DEFAULT)
 property defaultTags : ""
 
+-- DEFAULT DELIMITER FOR TAG SEPERATION
+property defaultDelims : {","}
+
 -- SET THIS "ON" IF YOU WISH TO ACTIVATE ARCHIVING OF PROCESSED MESSAGES IN '<year> Archive' MAILBOX
 property archiving : "ON"
 
@@ -223,13 +226,12 @@ on tagging_Dialog()
 		set dialogresult to the result
 		set userInput to text returned of dialogresult
 		set ButtonSel to button returned of dialogresult
-		set theDelims to {","}
 	on error number -128
 		set errNum to -128
 	end try
 	
 	-- Assemble tag list
-	set theTags to my Tag_List(userInput, theDelims)
+	set theTags to my Tag_List(theTags, defaultDelims)
 	
 	-- Reset, final check and formating of tags
 	set EVTag to {}
@@ -253,7 +255,7 @@ end default_Notebook
 on Tag_List(userInput, theDelims)
 	set oldDelims to AppleScript's text item delimiters
 	set theList to {userInput}
-	repeat with aDelim in theDelims
+	repeat with aDelim in defaultDelims
 		set AppleScript's text item delimiters to aDelim
 		set newList to {}
 		repeat with anItem in theList
