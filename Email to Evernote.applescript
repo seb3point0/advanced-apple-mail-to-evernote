@@ -53,8 +53,8 @@ THIS SCRIPT REQUIRES LION OR GREATER (OS X 10.7+) TO RUN WITHOUT MODIFICATION
 ======================================
 *)
 
--- SET THIS TO "OFF" IF YOU WANT TO SKIP THE TAGGING/NOTEBOOK DIALOG
--- AND SEND ITEMS DIRECTLY INTO YOUR DEFAULT NOTEBOOK
+-- SET THIS TO "OFF" IF YOU WANT TO SKIP THE TAGGINGDIALOG
+-- AND SEND ITEMS DIRECTLY INTO YOUR NOTEBOOK WITH THE DEFAULT TAGS
 property tagging_Switch : "ON"
 
 -- IF YOU'VE DISABLED THE TAGGING/NOTEBOOK DIALOG,
@@ -65,7 +65,10 @@ property EVnotebook : ""
 
 -- IF TAGGING IS ON AND YOU'D LIKE TO CHANGE THE DEFAULT TAG,
 -- TYPE IT BETWEEN THE QUOTES ("Email Message" IS DEFAULT)
-property defaultTag : ""
+property defaultTags : ""
+
+-- DEFAULT DELIMITER FOR TAG SEPERATION
+property defaultDelims : {","}
 
 -- SET THIS "ON" IF YOU WISH TO ACTIVATE ARCHIVING OF PROCESSED MESSAGES IN '<year> Archive' MAILBOX
 property archiving : "ON"
@@ -215,29 +218,46 @@ end item_Count
 
 -- Tagging and notebook selection dialog
 on tagging_Dialog()
+	
+	set isNotebookSelectionNeeded to false
+	
 	try
 		display dialog "" & Â
 			"Please Enter Your Tags Below:
-(Multiple Tags Separated By Commas)" with title "Veritrope.com | Apple Mail to Evernote Export" default answer defaultTag buttons {"Create in Default Notebook", "Select Notebook from List", "Cancel"} default button "Create in Default Notebook" cancel button Â
+(Multiple Tags Separated By Commas)" with title "Veritrope.com | Apple Mail to Evernote Export" default answer defaultTags buttons {"Create in Default Notebook", "Select Notebook from List", "Cancel"} default button "Create in Default Notebook" cancel button Â
 			"Cancel" with icon path to resource "Evernote.icns" in bundle (path to application "Evernote")
 		set dialogresult to the result
 		set userInput to text returned of dialogresult
 		set ButtonSel to button returned of dialogresult
-		set theDelims to {","}
 	on error number -128
 		set errNum to -128
 	end try
 	
+	-- Select Notebook
+	if ButtonSel is "Select Notebook from List" then set isNotebookSelectionNeeded to true
+	
+	my tagging_Selection(userInput, isNotebookSelectionNeeded)
+	
+end tagging_Dialog
+
+
+-- Tagging and notebook selection w/o dialog
+on tagging_Selection(theTags, isNotebookSelectionNeeded)
+	
+	if theTags is {} then set theTags to defaultTags
+	
 	-- Assemble tag list
-	set theTags to my Tag_List(userInput, theDelims)
+	set theTags to my Tag_List(theTags, defaultDelims)
 	
 	-- Reset, final check and formating of tags
 	set EVTag to {}
 	set EVTag to my Tag_Check(theTags)
 	
 	-- Select Notebook
-	if ButtonSel is "Select Notebook from List" then set EVnotebook to my Notebook_List()
-end tagging_Dialog
+	if isNotebookSelectionNeeded then set EVnotebook to my Notebook_List()
+	
+end tagging_Selection
+
 
 -- Get Evernote's default Notebook
 on default_Notebook()
@@ -253,7 +273,7 @@ end default_Notebook
 on Tag_List(userInput, theDelims)
 	set oldDelims to AppleScript's text item delimiters
 	set theList to {userInput}
-	repeat with aDelim in theDelims
+	repeat with aDelim in defaultDelims
 		set AppleScript's text item delimiters to aDelim
 		set newList to {}
 		repeat with anItem in theList
@@ -358,7 +378,11 @@ on mail_Process(theMessages)
 	my default_Notebook()
 	tell application "Mail"
 		try
-			if tagging_Switch is "ON" then my tagging_Dialog()
+			if tagging_Switch is "ON" then
+				my tagging_Dialog()
+			else
+				my tagging_Selection(defaultTags, false)
+			end if
 			
 			repeat with thisMessage in theMessages
 				try
