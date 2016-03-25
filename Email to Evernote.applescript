@@ -65,7 +65,7 @@ property EVnotebook : ""
 
 -- IF TAGGING IS ON AND YOU'D LIKE TO CHANGE THE DEFAULT TAG,
 -- TYPE IT BETWEEN THE QUOTES ("Email Message" IS DEFAULT)
-property defaultTag : ""
+property defaultTags : ""
 
 -- SET THIS "ON" IF YOU WISH TO ACTIVATE ARCHIVING OF PROCESSED MESSAGES IN '<year> Archive' MAILBOX
 property archiving : "ON"
@@ -218,7 +218,7 @@ on tagging_Dialog()
 	try
 		display dialog "" & Â
 			"Please Enter Your Tags Below:
-(Multiple Tags Separated By Commas)" with title "Veritrope.com | Apple Mail to Evernote Export" default answer defaultTag buttons {"Create in Default Notebook", "Select Notebook from List", "Cancel"} default button "Create in Default Notebook" cancel button Â
+(Multiple Tags Separated By Commas)" with title "Veritrope.com | Apple Mail to Evernote Export" default answer defaultTags buttons {"Create in Default Notebook", "Select Notebook from List", "Cancel"} default button "Create in Default Notebook" cancel button Â
 			"Cancel" with icon path to resource "Evernote.icns" in bundle (path to application "Evernote")
 		set dialogresult to the result
 		set userInput to text returned of dialogresult
